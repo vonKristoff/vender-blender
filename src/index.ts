@@ -247,7 +247,7 @@ padding: 4em 0;
 
     <div class="example">
       <div class="example-label">Cook it!</div>
-      <pre>/flour.milk.egg._pankcakes</pre>
+      <pre>/flour.milk.egg._pankcakes_</pre>
       <img src="/img-svg/flour.milk.egg._pancakes_" alt="Venn diagram" style="width: 100%; height: auto; object-fit: contain;"/>
     </div>
     <h3>The Builders dilema</h3>
