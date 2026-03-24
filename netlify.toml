@@ -1,9 +1,12 @@
 [build]
-  command = "vite build"
+  command = "pnpm build"
   functions = "functions"
 
 [functions]
   directory = "functions"
+
+[settings]
+  node_version = "18"
 
 [[redirects]]
   from = "/*"

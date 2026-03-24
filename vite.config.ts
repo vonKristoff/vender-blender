@@ -11,6 +11,7 @@ export default defineConfig({
       entry: './src/index.ts',
       outputDir: 'functions',
       output: 'server.js',
+      external: ['sharp'],
     }),
   ],
 })
