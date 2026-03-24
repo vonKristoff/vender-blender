@@ -2,7 +2,14 @@ import { Hono } from "hono";
 import sharp from "sharp";
 import rough from "roughjs";
 import { roughVennDiagram } from "./lib/venn";
-import heroPhysicsContent from "./lib/hero-physics.ts?raw";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const heroPhysicsContent = readFileSync(
+  __dirname + "/lib/hero-physics.ts",
+  "utf-8",
+);
 
 const app = new Hono();
 
@@ -114,7 +121,7 @@ app.get("/", (c) => {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Permanent+Marker&family=Trispace:wght@100..800&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; line-height: normal; }
     body { font-family: 'PermanentMarker', sans-serif; background: hotpink; color: #333; line-height: 1.6; }
     .hero {
       height: 97vh;
@@ -206,8 +213,9 @@ padding: 4em 0;
       align-items:center;
     }
       aside {
-      width: 35%;
+      width: 20%;
       font-family: "Trispace", sans-serif;
+      line-height: 0;
       }
       .text-xs {
       font-size: .6em;
@@ -217,16 +225,25 @@ padding: 4em 0;
 <body>
   <div class="hero">
     <div class="top">
-    <p style="font-family: Trispace;  font-size: 1.3em; color: #444;">Generate sketchy <strong>Venn diagrams</strong> from simple URL params</p>
+    <p style="font-family: Trispace; padding:0 2em; font-size: 1.3em; color: #444;">Generate sketchy <strong>Venn diagrams</strong> from simple URL params</p>
     <div>
     <p class="hero-message" id="hero-message"></p>
-    <h1 class="archivo-black-regular" style="font-size: 3rem; color: #222; text-align: center;">VENDER-BLENDER</h1>
+    <h1 class="archivo-black-regular" style="font-size: 4rem; color: #222; text-align: center;">VENDER-BLENDER</h1>
     </div>
 
     </div>
     <div class="hero-circles">
       <svg id="hero-svg" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"></svg>
     </div>
+    <button onclick="document.getElementById('try').scrollIntoView({behavior: 'smooth'})"
+      style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+             padding: 12px 24px; font-size: 1.2rem; background: white; border: 3px solid #333;
+             border-radius: 30px; cursor: pointer; font-family: 'Trispace';
+             box-shadow: 4px 4px 0 #333; transition: transform 0.1s, box-shadow 0.1s;"
+      onmouseover="this.style.transform='translateX(-50%) translateY(-2px)'; this.style.boxShadow='6px 6px 0 #333'"
+      onmouseout="this.style.transform='translateX(-50%)'; this.style.boxShadow='4px 4px 0 #333'">
+      Try it out!
+    </button>
   </div>
 
   <div class="container">
@@ -242,6 +259,8 @@ padding: 4em 0;
   <h3>Or just Link directly! (A raw image is returned)</h3>
   <pre>https://venn.threejjjs.xyz/img-svg/Venn/Diagram</pre>
 </div>
+
+
     <h2>How does it work?</h2>
     <div class="card" style="background: pink; padding: 1em 2em;">
     <h3>API Syntax</h3>
@@ -252,6 +271,18 @@ padding: 4em 0;
       <li><code>_label_</code> Universal set (super intersection)</li>
       <li><code>/</code> Separate multiple diagrams</li>
     </ul>
+    </div>
+
+    <h2 id="try">Try it out!</h2>
+    <div class="card" style="background: white; padding: 1.5em 2em;">
+      <form id="api-form" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; font-size: 1em">
+
+        <input type="text" id="sets-input" placeholder="venn.~intersection~.diagram"
+          style="flex: 1; min-width: 200px; padding: 10px;  border: 2px solid #FFB3BA; border-radius: 8px; font-family: Trispace, sans-serif;font-size: 1em;">
+
+        <button type="submit" style="padding: 10px 20px; font-size: 1em; background: #FFB3BA; border: none; border-radius: 8px; cursor: pointer; font-family: Trispace, sans-serif;">Generate</button>
+      </form>
+      <div id="result-preview" style=""></div>
     </div>
     <div class="example">
       <div class="example-label">Two Diagrams</div>
@@ -276,7 +307,6 @@ padding: 4em 0;
     </div>
 
 
-
     <h2>Fun Examples</h2>
 
     <div class="example">
@@ -298,6 +328,16 @@ padding: 4em 0;
       <img src="/img-svg/happiness.~anarchist~.rage.~martyrdom~.suffering.~philantropist~._teenager_" alt="Venn diagram" style="width: 100%; height: auto; object-fit: contain;"/>
     </div>
 
+    <h2>Try it out!</h2>
+    <div class="card" style="background: white; padding: 1.5em 2em;">
+      <form id="api-form" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; font-size: 1em">
+
+        <input type="text" id="sets-input" placeholder="venn.~intersection~.diagram"
+          style="flex: 1; min-width: 200px; padding: 10px;  border: 2px solid #FFB3BA; border-radius: 8px; font-family: Trispace, sans-serif;font-size: 1em;">
+        <button type="submit" style="padding: 10px 20px; font-size: 1em; background: #FFB3BA; border: none; border-radius: 8px; cursor: pointer; font-family: Trispace, sans-serif;">Generate</button>
+      </form>
+      <div id="result-preview" style=""></div>
+    </div>
 
 
   </div>
@@ -378,6 +418,36 @@ padding: 4em 0;
     } else {
       window.addEventListener("load", init);
     }
+
+    // API Form Handler
+    (function() {
+      var form = document.getElementById('api-form');
+      var input = document.getElementById('sets-input');
+      var formatSelect = document.getElementById('format-select');
+      var preview = document.getElementById('result-preview');
+
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var sets = input.value.trim();
+          if (!sets) {
+            preview.innerHTML = '<p style="color: #e55;">Please enter some sets!</p>';
+            return;
+          }
+          var format = formatSelect.value;
+          var url = '/' + format + '/' + sets;
+          var embedCode = '<iframe src="' + url + '" style="border: none; width: 400px; height: 400px; background: white; border-radius: 8px;"></iframe>';
+          preview.innerHTML =
+            '<div style="">' +
+              '<img src="' + url + '" alt="Preview" style="width: 100%; height: auto;"/>' +
+            '</div>' +
+            '<p style="margin-bottom: 0.5em; font-family: Trispace, sans-serif;"><strong>Embed code:</strong></p>' +
+            '<pre style="background: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 0.9em;">' +
+              (format === 'svg' ? embedCode : '&lt;img src="' + url + '" /&gt;') +
+            '</pre>';
+        });
+      }
+    })();
   </script>
 </body>
 </html>`);
