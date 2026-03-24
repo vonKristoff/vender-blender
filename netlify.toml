@@ -1,0 +1,11 @@
+[build]
+  command = "vite build"
+  functions = "functions"
+
+[functions]
+  directory = "functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/server"
+  status = 200

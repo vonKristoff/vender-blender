@@ -2,14 +2,31 @@
 
 Generate sketchy venn diagrams from simple URL params.
 
-## Quick Start
+## Quick Start (Local)
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-Visit `http://localhost:3000` to see the demo.
+Visit `http://localhost:5173` to see the demo.
+
+## Deploy to Netlify
+
+```bash
+pnpm install
+pnpm build
+netlify deploy --prod
+```
+
+Or connect your GitHub repository to Netlify for automatic deployments.
+
+### Netlify Configuration
+
+The `netlify.toml` file is configured to:
+- Build using Vite
+- Output serverless functions to `functions/`
+- Redirect all requests to the serverless function
 
 ## API Endpoints
 

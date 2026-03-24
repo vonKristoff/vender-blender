@@ -5,18 +5,21 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js"
+    "dev": "vite",
+    "build": "vite build",
+    "start": "vite preview"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.30.3",
   "devDependencies": {
+    "@hono/vite-build": "^1.10.1",
+    "@hono/vite-dev-server": "^0.25.1",
     "@types/node": "^25.5.0",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite": "^8.0.2"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.11",
