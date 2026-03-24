@@ -225,7 +225,7 @@ padding: 4em 0;
   <pre>&lt;img src="/svg/Venn.Diagram" /&gt;</pre>
 
   <h3>Or just Link directly! (A raw image is returned)</h3>
-  <pre>https://img-svg/Venn/Diagram</pre>
+  <pre>https://venn.threejjjs.xyz/img-svg/Venn/Diagram</pre>
 </div>
     <h2>How does it work?</h2>
     <div class="card" style="background: pink; padding: 1em 2em;">
@@ -240,7 +240,7 @@ padding: 4em 0;
     </div>
     <div class="example">
       <div class="example-label">Two Diagrams</div>
-      <pre>/Venn/Diagram</pre>
+      <pre>/img-svg/Venn/Diagram</pre>
       <img src="/img-svg/Venn/Diagram" alt="Venn diagram" style="width: 100%; height: auto; object-fit: contain;"/>
     </div>
 
@@ -251,12 +251,12 @@ padding: 4em 0;
 
     <div class="example">
       <div class="example-label">Create a Venn Diagram:</div>
-      <pre>/Venn.Diagram</pre>
+      <pre>/img-svg/Venn.Diagram</pre>
       <img src="/img-svg/Venn.Diagram" alt="Venn diagram" style="width: 100%; height: auto; object-fit: contain;"/>
     </div>
     <div class="example">
       <div class="example-label">Intersect it:</div>
-      <pre>/chicken.~dinosaur~.egg</pre>
+      <pre>/img-svg/chicken.~dinosaur~.egg</pre>
       <img src="/img-svg/chicken.~dinosaur~.egg" alt="Venn diagram" style="width: 100%; height: auto; object-fit: contain;"/>
     </div>
 
@@ -266,20 +266,20 @@ padding: 4em 0;
 
     <div class="example">
       <div class="example-label">Cook it!</div>
-      <pre>/flour.milk.egg._pankcakes_</pre>
+      <pre>/img-svg/flour.milk.egg._pankcakes_</pre>
       <img src="/img-svg/flour.milk.egg._pancakes_" alt="Venn diagram" style="width: 100%; height: auto; object-fit: contain;"/>
     </div>
     <h3>The Builders dilema</h3>
     <div class="example">
       <div class="example-label">You can ONLY choose TWO</div>
-      <pre>/good.fast.cheap._never-gonna-happen_</pre>
+      <pre>/img-svg/good.fast.cheap._never-gonna-happen_</pre>
       <img src="/img-svg/good.fast.cheap._never-gonna-happen_" alt="Venn diagram" style="width: 100%; height: auto; object-fit: contain;"/>
     </div>
 
     <h3>The emotions chceklist</h3>
     <div class="example">
       <div class="example-label">living your best life</div>
-      <pre>happiness.~anarchist~.rage.~martyrdom~.suffering.~philantropist~._teenager_</pre>
+      <pre>/happiness.~anarchist~.rage.~martyrdom~.suffering.~philantropist~._teenager_</pre>
       <img src="/img-svg/happiness.~anarchist~.rage.~martyrdom~.suffering.~philantropist~._teenager_" alt="Venn diagram" style="width: 100%; height: auto; object-fit: contain;"/>
     </div>
 
