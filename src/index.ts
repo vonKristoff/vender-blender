@@ -2,106 +2,90 @@ import { Hono } from "hono";
 import sharp from "sharp";
 import rough from "roughjs";
 import { roughVennDiagram } from "./lib/venn";
-import { FONT_DATA_URI } from "./lib/font-data";
-import { readFileSync } from "fs";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import heroPhysicsContent from "./lib/hero-physics.ts?raw";
 
 const app = new Hono();
 
-app.get("/hero-physics.js", (c) => {
-    const content = readFileSync(
-        join(__dirname, "lib", "hero-physics.ts"),
-        "utf-8",
-    );
-    return c.body(content.replace("// @ts-nocheck", ""), 200, {
-        "Content-Type": "application/javascript",
-    });
-});
-
 function getHeroCircles(): string {
-    const generator = rough.generator();
+  const generator = rough.generator();
 
-    let paths = "";
+  let paths = "";
 
-    paths += `<circle cx="150" cy="200" r="90" fill="#FFB3BA" fill-opacity="0.5" />`;
-    paths += `<circle cx="350" cy="200" r="90" fill="#BAE1FF" fill-opacity="0.5" />`;
+  paths += `<circle cx="150" cy="200" r="90" fill="#FFB3BA" fill-opacity="0.5" />`;
+  paths += `<circle cx="350" cy="200" r="90" fill="#BAE1FF" fill-opacity="0.5" />`;
 
-    const stroke1 = generator.circle(150, 200, 180, {
-        stroke: "#333",
-        strokeWidth: 2,
-        fill: "none",
+  const stroke1 = generator.circle(150, 200, 180, {
+    stroke: "#333",
+    strokeWidth: 2,
+    fill: "none",
+  });
+  const stroke2 = generator.circle(350, 200, 180, {
+    stroke: "#333",
+    strokeWidth: 2,
+    fill: "none",
+  });
+  const arrowLine = generator.line(210, 200, 290, 200, {
+    stroke: "#333",
+    strokeWidth: 4,
+  });
+
+  [stroke1, stroke2].forEach((drawable) => {
+    generator.toPaths(drawable).forEach((path: any) => {
+      paths += `<path d="${path.d}" fill="none" stroke="${path.stroke}" stroke-width="${path.strokeWidth}" />`;
     });
-    const stroke2 = generator.circle(350, 200, 180, {
-        stroke: "#333",
-        strokeWidth: 2,
-        fill: "none",
-    });
-    const arrowLine = generator.line(210, 200, 290, 200, {
-        stroke: "#333",
-        strokeWidth: 4,
-    });
+  });
+  generator.toPaths(arrowLine).forEach((path: any) => {
+    paths += `<path d="${path.d}" fill="none" stroke="${path.stroke}" stroke-width="${path.strokeWidth}" />`;
+  });
 
-    [stroke1, stroke2].forEach((drawable) => {
-        generator.toPaths(drawable).forEach((path: any) => {
-            paths += `<path d="${path.d}" fill="none" stroke="${path.stroke}" stroke-width="${path.strokeWidth}" />`;
-        });
-    });
-    generator.toPaths(arrowLine).forEach((path: any) => {
-        paths += `<path d="${path.d}" fill="none" stroke="${path.stroke}" stroke-width="${path.strokeWidth}" />`;
-    });
+  paths += `<polygon points="290,193 282,200 290,207" fill="#333" />`;
+  paths += `<polygon points="210,193 218,200 210,207" fill="#333" />`;
 
-    paths += `<polygon points="290,193 282,200 290,207" fill="#333" />`;
-    paths += `<polygon points="210,193 218,200 210,207" fill="#333" />`;
-
-    return paths;
+  return paths;
 }
 
 const heroSvgPaths = getHeroCircles();
 
 interface ParsedDiagram {
-    titles: string[];
-    intersections: { label: string; set1: number; set2: number }[];
-    universalSet?: string;
+  titles: string[];
+  intersections: { label: string; set1: number; set2: number }[];
+  universalSet?: string;
 }
 
 function parseDiagram(instance: string): ParsedDiagram | null {
-    const parts = instance.split(".");
-    const titles: string[] = [];
-    const intersections: { label: string; set1: number; set2: number }[] = [];
-    let universalSet: string | undefined;
+  const parts = instance.split(".");
+  const titles: string[] = [];
+  const intersections: { label: string; set1: number; set2: number }[] = [];
+  let universalSet: string | undefined;
 
-    parts.forEach((part) => {
-        if (part.startsWith("_") && part.endsWith("_")) {
-            universalSet = part.slice(1, -1);
-        } else if (part.startsWith("~") && part.endsWith("~")) {
-            const set1 = titles.length - 1;
-            intersections.push({
-                label: part.slice(1, -1),
-                set1,
-                set2: set1 + 1,
-            });
-        } else {
-            titles.push(part);
-        }
-    });
-
-    intersections.forEach((inter) => {
-        inter.set2 = inter.set2 % titles.length;
-    });
-
-    if (titles.length < 1 || titles.length > 3) {
-        return null;
+  parts.forEach((part) => {
+    if (part.startsWith("_") && part.endsWith("_")) {
+      universalSet = part.slice(1, -1);
+    } else if (part.startsWith("~") && part.endsWith("~")) {
+      const set1 = titles.length - 1;
+      intersections.push({
+        label: part.slice(1, -1),
+        set1,
+        set2: set1 + 1,
+      });
+    } else {
+      titles.push(part);
     }
+  });
 
-    return { titles, intersections, universalSet };
+  intersections.forEach((inter) => {
+    inter.set2 = inter.set2 % titles.length;
+  });
+
+  if (titles.length < 1 || titles.length > 3) {
+    return null;
+  }
+
+  return { titles, intersections, universalSet };
 }
 
 app.get("/", (c) => {
-    return c.html(`<!DOCTYPE html>
+  return c.html(`<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -290,7 +274,7 @@ padding: 4em 0;
 
   <script src="https://cdn.jsdelivr.net/npm/@hiseb/confetti@2.1.0/dist/confetti.min.js"></script>
   <script src="https://unpkg.com/roughjs@4.6.6/bundled/rough.js"></script>
-  <script src="/hero-physics.js"></script>
+  <script>${heroPhysicsContent.replace("// @ts-nocheck", "")}</script>
   <script>
     var el = document.getElementById('hero-message');
     var messages = {
@@ -346,161 +330,161 @@ padding: 4em 0;
 });
 
 app.get("/svg/*", (c) => {
-    const path = c.req.path;
-    const segments = path.split("/").filter(Boolean);
+  const path = c.req.path;
+  const segments = path.split("/").filter(Boolean);
 
-    if (segments.length === 0 || segments[0] !== "svg") {
-        return c.text("svg api");
-    }
+  if (segments.length === 0 || segments[0] !== "svg") {
+    return c.text("svg api");
+  }
 
-    const instances = segments.slice(1);
+  const instances = segments.slice(1);
 
-    if (instances.length === 0) {
-        return c.text("svg api - add diagram: /svg/Title-1.Title-2.Title-3");
-    }
+  if (instances.length === 0) {
+    return c.text("svg api - add diagram: /svg/Title-1.Title-2.Title-3");
+  }
 
-    const parsedDiagrams = instances.map((instance, idx) => {
-        const parsed = parseDiagram(instance);
-        if (!parsed) return null;
-        return roughVennDiagram(
-            parsed.titles,
-            parsed.intersections,
-            idx,
-            parsed.universalSet,
-        );
-    });
+  const parsedDiagrams = instances.map((instance, idx) => {
+    const parsed = parseDiagram(instance);
+    if (!parsed) return null;
+    return roughVennDiagram(
+      parsed.titles,
+      parsed.intersections,
+      idx,
+      parsed.universalSet,
+    );
+  });
 
-    if (parsedDiagrams.includes(null)) {
-        return c.text("diagram requires 1-3 sets");
-    }
+  if (parsedDiagrams.includes(null)) {
+    return c.text("diagram requires 1-3 sets");
+  }
 
-    return c.html(parsedDiagrams.join(""));
+  return c.html(parsedDiagrams.join(""));
 });
 
 app.get("/img-svg/*", (c) => {
-    const path = c.req.path;
-    const segments = path.split("/").filter(Boolean);
+  const path = c.req.path;
+  const segments = path.split("/").filter(Boolean);
 
-    if (segments.length === 0 || segments[0] !== "img-svg") {
-        return c.text("img-svg api");
-    }
+  if (segments.length === 0 || segments[0] !== "img-svg") {
+    return c.text("img-svg api");
+  }
 
-    const instances = segments.slice(1);
+  const instances = segments.slice(1);
 
-    if (instances.length === 0) {
-        return c.text(
-            "img-svg api - add diagram: /img-svg/Title-1.Title-2.Title-3",
-        );
-    }
+  if (instances.length === 0) {
+    return c.text(
+      "img-svg api - add diagram: /img-svg/Title-1.Title-2.Title-3",
+    );
+  }
 
-    const parsedDiagrams = instances.map((instance, idx) => {
-        const parsed = parseDiagram(instance);
-        if (!parsed) return null;
-        return roughVennDiagram(
-            parsed.titles,
-            parsed.intersections,
-            idx,
-            parsed.universalSet,
-        );
+  const parsedDiagrams = instances.map((instance, idx) => {
+    const parsed = parseDiagram(instance);
+    if (!parsed) return null;
+    return roughVennDiagram(
+      parsed.titles,
+      parsed.intersections,
+      idx,
+      parsed.universalSet,
+    );
+  });
+
+  if (parsedDiagrams.includes(null)) {
+    return c.text("diagram requires 1-3 sets");
+  }
+
+  if (parsedDiagrams.length === 1) {
+    return c.body(parsedDiagrams[0]!, 200, {
+      "Content-Type": "image/svg+xml",
     });
+  }
 
-    if (parsedDiagrams.includes(null)) {
-        return c.text("diagram requires 1-3 sets");
-    }
+  const diagramSizes = parsedDiagrams.map((svg) => {
+    const wMatch = svg!.match(/width="(\d+)"/);
+    const hMatch = svg!.match(/height="(\d+)"/);
+    return {
+      width: wMatch ? parseInt(wMatch[1]) : 400,
+      height: hMatch ? parseInt(hMatch[1]) : 400,
+      content: svg!.replace(/<svg[^>]*>|<\/svg>/g, ""),
+    };
+  });
 
-    if (parsedDiagrams.length === 1) {
-        return c.body(parsedDiagrams[0]!, 200, {
-            "Content-Type": "image/svg+xml",
-        });
-    }
+  const gap = 20;
+  const cols = Math.ceil(Math.sqrt(diagramSizes.length));
+  const rows = Math.ceil(diagramSizes.length / cols);
+  const maxWidth = Math.max(...diagramSizes.map((d) => d.width));
+  const maxHeight = Math.max(...diagramSizes.map((d) => d.height));
+  const totalWidth = cols * maxWidth + (cols - 1) * gap;
+  const totalHeight = rows * maxHeight + (rows - 1) * gap;
 
-    const diagramSizes = parsedDiagrams.map((svg) => {
-        const wMatch = svg!.match(/width="(\d+)"/);
-        const hMatch = svg!.match(/height="(\d+)"/);
-        return {
-            width: wMatch ? parseInt(wMatch[1]) : 400,
-            height: hMatch ? parseInt(hMatch[1]) : 400,
-            content: svg!.replace(/<svg[^>]*>|<\/svg>/g, ""),
-        };
-    });
+  let compositeSvg = `<svg width="${totalWidth}" height="${totalHeight}" xmlns="http://www.w3.org/2000/svg"><style>text { font-family: 'PermanentMarker', cursive; }</style>`;
+  diagramSizes.forEach((d, i) => {
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const x = col * (maxWidth + gap);
+    const y = row * (maxHeight + gap);
+    compositeSvg += `<g transform="translate(${x}, ${y})">${d.content}</g>`;
+  });
+  compositeSvg += "</svg>";
 
-    const gap = 20;
-    const cols = Math.ceil(Math.sqrt(diagramSizes.length));
-    const rows = Math.ceil(diagramSizes.length / cols);
-    const maxWidth = Math.max(...diagramSizes.map((d) => d.width));
-    const maxHeight = Math.max(...diagramSizes.map((d) => d.height));
-    const totalWidth = cols * maxWidth + (cols - 1) * gap;
-    const totalHeight = rows * maxHeight + (rows - 1) * gap;
-
-    let compositeSvg = `<svg width="${totalWidth}" height="${totalHeight}" xmlns="http://www.w3.org/2000/svg"><style>text { font-family: 'PermanentMarker', cursive; }</style>`;
-    diagramSizes.forEach((d, i) => {
-        const col = i % cols;
-        const row = Math.floor(i / cols);
-        const x = col * (maxWidth + gap);
-        const y = row * (maxHeight + gap);
-        compositeSvg += `<g transform="translate(${x}, ${y})">${d.content}</g>`;
-    });
-    compositeSvg += "</svg>";
-
-    return c.body(compositeSvg, 200, {
-        "Content-Type": "image/svg+xml",
-    });
+  return c.body(compositeSvg, 200, {
+    "Content-Type": "image/svg+xml",
+  });
 });
 
 app.get("/png/*", async (c) => {
-    const path = c.req.path;
-    const segments = path.split("/").filter(Boolean);
+  const path = c.req.path;
+  const segments = path.split("/").filter(Boolean);
 
-    if (segments.length === 0 || segments[0] !== "png") {
-        return c.text("png api");
-    }
+  if (segments.length === 0 || segments[0] !== "png") {
+    return c.text("png api");
+  }
 
-    const instances = segments.slice(1);
+  const instances = segments.slice(1);
 
-    if (instances.length === 0) {
-        return c.text("png api - add diagram: /png/Title-1.Title-2.Title-3");
-    }
+  if (instances.length === 0) {
+    return c.text("png api - add diagram: /png/Title-1.Title-2.Title-3");
+  }
 
-    const parsedDiagrams = instances.map((instance, idx) => {
-        const parsed = parseDiagram(instance);
-        if (!parsed) return null;
-        return roughVennDiagram(
-            parsed.titles,
-            parsed.intersections,
-            idx,
-            parsed.universalSet,
-        );
-    });
+  const parsedDiagrams = instances.map((instance, idx) => {
+    const parsed = parseDiagram(instance);
+    if (!parsed) return null;
+    return roughVennDiagram(
+      parsed.titles,
+      parsed.intersections,
+      idx,
+      parsed.universalSet,
+    );
+  });
 
-    if (parsedDiagrams.includes(null)) {
-        return c.text("diagram requires 1-3 sets");
-    }
+  if (parsedDiagrams.includes(null)) {
+    return c.text("diagram requires 1-3 sets");
+  }
 
-    const diagramWidth = 400;
-    const diagramHeight = 400;
-    const gap = 20;
-    const cols = Math.ceil(Math.sqrt(parsedDiagrams.length));
-    const rows = Math.ceil(parsedDiagrams.length / cols);
-    const totalWidth = cols * diagramWidth + (cols - 1) * gap;
-    const totalHeight = rows * diagramHeight + (rows - 1) * gap;
+  const diagramWidth = 400;
+  const diagramHeight = 400;
+  const gap = 20;
+  const cols = Math.ceil(Math.sqrt(parsedDiagrams.length));
+  const rows = Math.ceil(parsedDiagrams.length / cols);
+  const totalWidth = cols * diagramWidth + (cols - 1) * gap;
+  const totalHeight = rows * diagramHeight + (rows - 1) * gap;
 
-    let compositeSvg = `<svg width="${totalWidth}" height="${totalHeight}" xmlns="http://www.w3.org/2000/svg"><style>text { font-family: 'PermanentMarker'; }</style>`;
-    parsedDiagrams.forEach((svgContent, i) => {
-        if (!svgContent) return;
-        const col = i % cols;
-        const row = Math.floor(i / cols);
-        const x = col * (diagramWidth + gap);
-        const y = row * (diagramHeight + gap);
-        compositeSvg += `<g transform="translate(${x}, ${y})">${svgContent.replace(/<\/?svg[^>]*>/g, "")}</g>`;
-    });
-    compositeSvg += "</svg>";
+  let compositeSvg = `<svg width="${totalWidth}" height="${totalHeight}" xmlns="http://www.w3.org/2000/svg"><style>text { font-family: 'PermanentMarker'; }</style>`;
+  parsedDiagrams.forEach((svgContent, i) => {
+    if (!svgContent) return;
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const x = col * (diagramWidth + gap);
+    const y = row * (diagramHeight + gap);
+    compositeSvg += `<g transform="translate(${x}, ${y})">${svgContent.replace(/<\/?svg[^>]*>/g, "")}</g>`;
+  });
+  compositeSvg += "</svg>";
 
-    const svgBuffer = Buffer.from(compositeSvg);
-    const pngBuffer = await sharp(svgBuffer).png().toBuffer();
+  const svgBuffer = Buffer.from(compositeSvg);
+  const pngBuffer = await sharp(svgBuffer).png().toBuffer();
 
-    return c.body(new Uint8Array(pngBuffer), 200, {
-        "Content-Type": "image/png",
-    });
+  return c.body(new Uint8Array(pngBuffer), 200, {
+    "Content-Type": "image/png",
+  });
 });
 
 export default app;
