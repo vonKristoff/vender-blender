@@ -91,6 +91,25 @@ app.get("/", (c) => {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VENDER-BLENDER - Venn Diagram API</title>
+  <!-- HTML Meta Tags -->
+<meta name="description" content="AUTO GENERATE ON THE FLY VENN DIAGRAMS - USING API">
+
+<!-- Facebook Meta Tags -->
+<meta property="og:url" content="https://venn.threejjjs.xyz/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="VENDER-BLENDER - Venn Diagram API">
+<meta property="og:description" content="Generate your own Venn Diagram MEME immediately using this API">
+<meta property="og:image" content="threejjjs.xyz/thumbs/VENN.jpg">
+
+<!-- Twitter Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="venn.threejjjs.xyz">
+<meta property="twitter:url" content="https://venn.threejjjs.xyz/">
+<meta name="twitter:title" content="VENDER-BLENDER - Venn Diagram API">
+<meta name="twitter:description" content="Generate your own Venn Diagram MEME immediately using this API">
+<meta name="twitter:image" content="threejjjs.xyz/thumbs/VENN.jpg">
+
+<!-- Meta Tags Generated via https://www.opengraph.xyz -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Permanent+Marker&family=Trispace:wght@100..800&display=swap" rel="stylesheet">
