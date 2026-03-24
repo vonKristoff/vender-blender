@@ -162,6 +162,9 @@ app.get("/", (c) => {
       justify-content: space-between;
 padding: 4em 0;
     }
+    .inline-link {
+      color: inherit;
+    }
     p, div {
       font-size: 1.2em;
       font-family: "Permanent Marker", cursive;
@@ -197,6 +200,18 @@ padding: 4em 0;
     color: aquamarine;
 
     }
+    footer {
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+    }
+      aside {
+      width: 35%;
+      font-family: "Trispace", sans-serif;
+      }
+      .text-xs {
+      font-size: .6em;
+      }
   </style>
 </head>
 <body>
@@ -269,27 +284,47 @@ padding: 4em 0;
       <pre>/img-svg/flour.milk.egg._pankcakes_</pre>
       <img src="/img-svg/flour.milk.egg._pancakes_" alt="Venn diagram" style="width: 100%; height: auto; object-fit: contain;"/>
     </div>
-    <h3>The Builders dilema</h3>
+    <h3>The builders dilema</h3>
     <div class="example">
       <div class="example-label">You can ONLY choose TWO</div>
       <pre>/img-svg/good.fast.cheap._never-gonna-happen_</pre>
       <img src="/img-svg/good.fast.cheap._never-gonna-happen_" alt="Venn diagram" style="width: 100%; height: auto; object-fit: contain;"/>
     </div>
 
-    <h3>The emotions chceklist</h3>
+    <h3>The emotions checklist</h3>
     <div class="example">
       <div class="example-label">living your best life</div>
-      <pre>/happiness.~anarchist~.rage.~martyrdom~.suffering.~philantropist~._teenager_</pre>
+      <pre>happiness.~anarchist~.rage.~martyrdom~.suffering.~philantropist~._teenager_</pre>
       <img src="/img-svg/happiness.~anarchist~.rage.~martyrdom~.suffering.~philantropist~._teenager_" alt="Venn diagram" style="width: 100%; height: auto; object-fit: contain;"/>
     </div>
 
 
 
-
-    <footer>
-      <h4>VENDER-BLENDER - Sketchy Venn Diagrams API</h4>
-    </footer>
   </div>
+    <footer>
+    <aside></aside>
+    <div>
+    <h4>VENDER-BLENDER - Sketchy Venn Diagrams API</h4>
+    <span class="text-xs"
+    >&copy; All rights reserved.</span
+    >
+    </div>
+      <aside
+      class="p-4 hidden md:flex flex-col text-right text-text-200 justify-end text-wash-300"
+    >
+      <span class="text-xs">built with humans</span>
+      <a class="inline-link" href="https://threejjjs.xyz">
+        <h4
+          class="text-right py-1 text-text-200 md:text-3xl font-secondary m-0"
+        >
+          three<span style="opacity:.5;" class="text-emerald-700">jjj</span>s
+          <br />
+        </h4>
+      </a>
+      <span class="text-xs">Interactive Tech</span>
+    </aside>
+    </footer>
+
 
   <script src="https://cdn.jsdelivr.net/npm/@hiseb/confetti@2.1.0/dist/confetti.min.js"></script>
   <script src="https://unpkg.com/roughjs@4.6.6/bundled/rough.js"></script>
