@@ -99,7 +99,7 @@ app.get("/", (c) => {
 <meta property="og:type" content="website">
 <meta property="og:title" content="VENDER-BLENDER - Venn Diagram API">
 <meta property="og:description" content="Generate your own Venn Diagram MEME immediately using this API">
-<meta property="og:image" content="threejjjs.xyz/thumbs/VENN.jpg">
+<meta property="og:image" content="https://threejjjs.xyz/thumbs/VENN.jpg">
 
 <!-- Twitter Meta Tags -->
 <meta name="twitter:card" content="summary_large_image">
@@ -107,7 +107,7 @@ app.get("/", (c) => {
 <meta property="twitter:url" content="https://venn.threejjjs.xyz/">
 <meta name="twitter:title" content="VENDER-BLENDER - Venn Diagram API">
 <meta name="twitter:description" content="Generate your own Venn Diagram MEME immediately using this API">
-<meta name="twitter:image" content="threejjjs.xyz/thumbs/VENN.jpg">
+<meta name="twitter:image" content="https://threejjjs.xyz/thumbs/VENN.jpg">
 
 <!-- Meta Tags Generated via https://www.opengraph.xyz -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
