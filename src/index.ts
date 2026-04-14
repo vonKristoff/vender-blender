@@ -52,10 +52,6 @@ const heroPhysicsContent = `window.onload = function () {
         var centerX = window.innerWidth / 2;
         var centerY = window.innerHeight / 2;
         var vennOffset = RADIUS * 0.5;
-        circles[0].x = centerX - vennOffset;
-        circles[0].y = centerY;
-        circles[1].x = centerX + vennOffset;
-        circles[1].y = centerY;
         originalPositions[0].x = centerX - vennOffset;
         originalPositions[0].y = centerY;
         originalPositions[1].x = centerX + vennOffset;
@@ -389,11 +385,17 @@ padding: 4em 0;
     }
     footer {
       display:flex;
+      @media (max-width: 768px) {
+        flex-direction: column;
+      }
       justify-content: space-between;
       align-items:center;
     }
       aside {
       width: 20%;
+      @media (max-width: 768px) {
+        width:100%;
+      }
       font-family: "Trispace", sans-serif;
       line-height: 0;
       }
@@ -459,7 +461,11 @@ padding: 4em 0;
 
         <input type="text" id="sets-input" placeholder="venn.~intersection~.diagram"
           style="flex: 1; min-width: 200px; padding: 10px;  border: 2px solid #FFB3BA; border-radius: 8px; font-family: Trispace, sans-serif;font-size: 1em;">
+        <select id="format-select" style="padding: 10px; font-size: 1em; border: 2px solid #BAE1FF; border-radius: 8px; font-family: Trispace, sans-serif;">
+          <option value="img-svg">SVG</option>
+          <option value="png">PNG</option>
 
+        </select>
         <button type="submit" style="padding: 10px 20px; font-size: 1em; background: #FFB3BA; border: none; border-radius: 8px; cursor: pointer; font-family: Trispace, sans-serif;">Generate</button>
       </form>
       <div id="result-preview" style=""></div>
@@ -514,6 +520,11 @@ padding: 4em 0;
 
         <input type="text" id="sets-input" placeholder="venn.~intersection~.diagram"
           style="flex: 1; min-width: 200px; padding: 10px;  border: 2px solid #FFB3BA; border-radius: 8px; font-family: Trispace, sans-serif;font-size: 1em;">
+        <select id="format-select" style="padding: 10px; font-size: 1em; border: 2px solid #BAE1FF; border-radius: 8px; font-family: Trispace, sans-serif;">
+          <option value="img-svg">SVG</option>
+          <option value="png">PNG</option>
+
+        </select>
         <button type="submit" style="padding: 10px 20px; font-size: 1em; background: #FFB3BA; border: none; border-radius: 8px; cursor: pointer; font-family: Trispace, sans-serif;">Generate</button>
       </form>
       <div id="result-preview" style=""></div>
@@ -606,15 +617,16 @@ padding: 4em 0;
       var formatSelect = document.getElementById('format-select');
       var preview = document.getElementById('result-preview');
 
-      if (form) {
-        form.addEventListener('submit', function(e) {
-          e.preventDefault();
-          var sets = input.value.trim();
-          if (!sets) {
-            preview.innerHTML = '<p style="color: #e55;">Please enter some sets!</p>';
-            return;
-          }
-          var format = formatSelect.value;
+      if (!form || !input || !formatSelect || !preview) return;
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var sets = input.value.trim();
+        if (!sets) {
+          preview.innerHTML = '<p style="color: #e55;">Please enter some sets!</p>';
+          return;
+        }
+        var format = formatSelect.value;
           var url = '/' + format + '/' + sets;
           var embedCode = '<iframe src="' + url + '" style="border: none; width: 400px; height: 400px; background: white; border-radius: 8px;"></iframe>';
           preview.innerHTML =
@@ -625,8 +637,10 @@ padding: 4em 0;
             '<pre style="background: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 0.9em;">' +
               (format === 'svg' ? embedCode : '&lt;img src="' + url + '" /&gt;') +
             '</pre>';
+          if (typeof confetti === 'function') {
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+          }
         });
-      }
     })();
   </script>
 </body>
